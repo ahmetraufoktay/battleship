@@ -1,4 +1,4 @@
-import { Ship } from "./ship";
+import { Ship } from "../src/ship";
 
 test("Increases hits", () => {
   const myShip = new Ship(3);
