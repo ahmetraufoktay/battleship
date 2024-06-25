@@ -38,3 +38,19 @@ test("All ships sunk", () => {
   myBoard.receiveAttack(3, 1);
   expect(myBoard.over()).toBe(true);
 });
+
+test("Hits ship and records to the timesHit", () => {
+  const myBoard = new Gameboard();
+  myBoard.place(3, 3, 3, "dikey");
+  myBoard.receiveAttack(3, 3);
+  expect(myBoard.ships[0]).toEqual({
+    coordinates: [
+      [3, 3],
+      [4, 3],
+      [5, 3],
+    ],
+    length: 3,
+    sunk: false,
+    timesHit: 1,
+  });
+});
