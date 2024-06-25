@@ -1,6 +1,8 @@
+import { Ship } from "./ship";
 class Gameboard {
   constructor() {
     this.map = Array.from({ length: 10 }, () => Array(10).fill(0));
+    this.ships = [];
   }
   // (y,x) = coordinates, len = length, dir = direction
   place(y, x, len, dir) {
@@ -17,9 +19,13 @@ class Gameboard {
       }
     }
 
+    const ship = new Ship(len);
+
     for (let i = 0; i < len; i++) {
       this.map[y + i * dy][x + i * dx] = 1;
+      ship.coordinates.push([y + i * dy, x + i * dx]);
     }
+    this.ships.push(ship);
   }
   receiveAttack(y, x) {
     switch (this.map[y][x]) {
@@ -28,6 +34,13 @@ class Gameboard {
         break;
       case 1:
         this.map[y][x] = -1;
+        for (let ship of this.ships) {
+          for (let coord of ship.coordinates) {
+            if (coord[0] === y && coord[1] === x) {
+              ship.hit();
+            }
+          }
+        }
         break;
       case 2:
         return;
