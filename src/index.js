@@ -1,25 +1,12 @@
 import "./style.css";
-import { Gameboard } from "./gameboard";
+import { Player } from "./player";
+import { twoPlayerMain } from "./table";
 
-const playerOne = document.getElementById("playerOne");
-const playerTwo = document.getElementById("playerTwo");
+const body = document.querySelector("body");
 
-function createSquare(x, y) {
-  const block = document.createElement("div");
-  block.classList = "tile";
-  block.setAttribute("data-x", x);
-  block.setAttribute("data-y", y);
-  return block;
-}
+const playerOne = new Player("human");
+const playerTwo = new Player("human");
 
-function loadSquares(player) {
-  for (let i = 1; i <= 10; i++) {
-    for (let j = 1; j <= 10; j++) {
-      const myblock = createSquare(i, j);
-      player.appendChild(myblock);
-    }
-  }
-}
+body.appendChild(twoPlayerMain);
 
-loadSquares(playerOne);
-loadSquares(playerTwo);
+export { playerOne, playerTwo };
