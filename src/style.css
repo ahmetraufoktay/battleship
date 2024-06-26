@@ -1,3 +1,7 @@
+@font-face {
+  font-family: "Warfare";
+  src: url("./fonts/MODERN\ WARFARE.ttf");
+}
 :root {
   font-size: 16px;
 }
@@ -11,9 +15,11 @@ body {
 }
 
 nav {
-  font-size: 4rem;
+  font-size: 5rem;
+  font-weight: bolder;
   text-align: center;
   padding: 20px 0;
+  font-family: "Warfare";
 }
 
 main {
@@ -39,4 +45,47 @@ main {
   height: calc(10% - 4px);
   border: 2px solid rgba(222, 208, 208, 0.625);
   cursor: pointer;
+}
+
+/* NAME MENU */
+#nameArea {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10vh;
+  width: 400px;
+}
+
+#label {
+  text-align: center;
+  color: navy;
+  font-size: 3.5rem;
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+#nameInput {
+  width: 100%;
+  height: 10vh;
+  font-size: 3.5rem;
+  display: flex;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+
+#nameButton {
+  width: 100%;
+  height: 10vh;
+  border-style: none;
+  background-color: greenyellow;
+  cursor: pointer;
+  border: 2px solid black;
+
+  font-size: 3rem;
+}
+
+#nameButton:active {
+  transform: scale(95%);
+  transition: 0.2s;
 }
