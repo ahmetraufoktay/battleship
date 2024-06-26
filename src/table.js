@@ -1,10 +1,9 @@
 import { playerOne } from "./index";
 import { playerTwo } from "./index";
+import { playerOneDiv } from "./selection";
 
-const twoPlayerMain = document.createElement("main");
+const tableMain = document.createElement("main");
 
-const playerOneDiv = document.createElement("div");
-playerOneDiv.id = "playerOne";
 const playerTwoDiv = document.createElement("div");
 playerTwoDiv.id = "playerTwo";
 
@@ -40,15 +39,13 @@ playerTwoDiv.addEventListener("click", (event) => {
 
   if (playerTwo.gameboard.over()) {
     setTimeout(() => {
-      alert("GAME OVER");
+      alert("Game Over");
     }, 250);
   }
 });
 
-loadSquares(playerOneDiv);
 loadSquares(playerTwoDiv);
 
-twoPlayerMain.appendChild(playerOneDiv);
-twoPlayerMain.appendChild(playerTwoDiv);
+tableMain.appendChild(playerTwoDiv);
 
-export { twoPlayerMain };
+export { tableMain, loadSquares };
