@@ -1,0 +1,42 @@
+:root {
+  font-size: 16px;
+}
+body {
+  margin: 0px;
+  padding: 0px;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+nav {
+  font-size: 4rem;
+  text-align: center;
+  padding: 20px 0;
+}
+
+main {
+  display: flex;
+  height: fit-content;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  flex: 1 0 auto;
+}
+
+#playerOne,
+#playerTwo {
+  width: clamp(350px, 30vw, 500px);
+  height: clamp(350px, 30vw, 500px);
+  background-color: seagreen;
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.tile {
+  width: calc(10% - 4px);
+  height: calc(10% - 4px);
+  border: 2px solid rgba(222, 208, 208, 0.625);
+  cursor: pointer;
+}
