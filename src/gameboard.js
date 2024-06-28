@@ -27,6 +27,29 @@ class Gameboard {
     }
     this.ships.push(ship);
   }
+  remove(y, x, len, dir) {
+    const dx = dir === "yatay" ? 1 : 0;
+    const dy = dir === "dikey" ? 1 : 0;
+
+    if ((dx && x + len > 10) || (dy && y + len > 10)) {
+      return;
+    }
+
+    for (let i = 0; i < len; i++) {
+      if (this.map[y + i * dy][x + i * dx] !== 1) {
+        return;
+      }
+    }
+
+    for (let i = 0; i < len; i++) {
+      this.map[y + i * dy][x + i * dx] = 0;
+    }
+
+    const indexToRemove = this.ships.findIndex(
+      (ship) => ship.coordinates[0][0] == y && ship.coordinates[0][1] == x,
+    );
+    this.ships.splice(indexToRemove, 1);
+  }
   receiveAttack(y, x) {
     switch (this.map[y][x]) {
       case 0:
