@@ -1,8 +1,8 @@
 import { playerOne } from "./index";
 import { playerTwo } from "./index";
-import { playerOneDiv } from "./selection";
 
 const tableMain = document.createElement("main");
+tableMain.id = "tableMain";
 
 const playerTwoDiv = document.createElement("div");
 playerTwoDiv.id = "playerTwo";
@@ -46,6 +46,4 @@ playerTwoDiv.addEventListener("click", (event) => {
 
 loadSquares(playerTwoDiv);
 
-tableMain.appendChild(playerTwoDiv);
-
-export { tableMain, loadSquares };
+export { playerTwoDiv, tableMain, loadSquares };
