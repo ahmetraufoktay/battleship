@@ -27,8 +27,14 @@ main {
   height: fit-content;
   flex-direction: row;
   align-items: center;
-  justify-content: space-around;
   flex: 1 0 auto;
+}
+#tableMain,
+#nameMenu {
+  justify-content: space-around;
+}
+#selectionMenu {
+  justify-content: space-evenly;
 }
 
 #playerOne,
@@ -86,6 +92,31 @@ main {
 }
 
 #nameButton:active {
+  transform: scale(95%);
+  transition: 0.2s;
+}
+
+/* Ship Select Menu */
+
+#shipMenu {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr 1fr;
+  justify-items: center;
+  align-content: center;
+  max-height: 350px;
+  gap: 30px;
+}
+
+#approve {
+  border-style: none;
+  border: 2px solid navy;
+  width: 120px;
+  height: 60px;
+  background-color: greenyellow;
+  font-size: 1rem;
+}
+#approve:active {
   transform: scale(95%);
   transition: 0.2s;
 }
