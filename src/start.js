@@ -17,6 +17,7 @@ nameArea.appendChild(input);
 nameArea.appendChild(button);
 
 const nameMenu = document.createElement("main");
-nameMenu.appendChild(nameArea);
+nameMenu.id = "nameMenu";
+nameMenu.appendChild(nameArea); /* nameMenu */
 
 export { nameMenu };
