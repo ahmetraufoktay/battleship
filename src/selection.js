@@ -2,75 +2,101 @@ import { loadSquares } from "./table";
 import { tableMain } from "./table";
 import { playerTwoDiv } from "./table";
 import { playerOne } from ".";
-
+//selection menu
 const selectionMenu = document.createElement("main");
 selectionMenu.id = "selectionMenu";
+//player one table
 const playerOneDiv = document.createElement("div");
 playerOneDiv.id = "playerOne";
+// ship settings menu
+const shipSettings = document.createElement("div");
+shipSettings.id = "shipSettings";
 
 loadSquares(playerOneDiv);
 
+selectionMenu.appendChild(shipSettings);
 selectionMenu.appendChild(playerOneDiv);
 
-playerOneDiv.addEventListener("mouseover", mouseOver);
+// direction selection Button
+const directionButton = document.createElement("button");
+directionButton.id = "changeDirection";
+shipSettings.appendChild(directionButton);
+//inital direction
+let dir = "yatay";
+let currentDirection = dir === "yatay" ? "X" : "Y";
+directionButton.textContent = `Direction: ${currentDirection}`;
 
-function mouseOver(event) {
-  const element = event.target;
-  let x = parseInt(element.dataset.x, 10);
-  let y = parseInt(element.dataset.y, 10);
-  element.addEventListener("click", removeListeners);
-  playerOne.gameboard.place(y, x, 5, "yatay");
-  playerOne.gameboard.map.forEach((row, rowIndex) => {
-    row.forEach((value, colIndex) => {
-      if (value === 1) {
-        const tile = document.querySelector(
-          `.tile[data-x="${colIndex}"][data-y="${rowIndex}"]`,
-        );
-        tile.style.backgroundColor = "blue";
-      }
-    });
-  });
-}
+directionButton.addEventListener("click", () => {
+  dir = dir === "yatay" ? "dikey" : "yatay";
+  currentDirection = dir === "yatay" ? "X" : "Y";
+  directionButton.textContent = `Direction: ${currentDirection}`;
+});
+//block placing function
+async function placeBlock(len) {
+  return new Promise((resolve) => {
+    let blockInProgress = false; // to prevent removing blocks that were already placed
 
-function removeListeners() {
-  playerOneDiv.removeEventListener("mouseover", mouseOver);
-  playerOneDiv.removeEventListener("mouseout", mouseOut);
-  playerOneDiv.removeEventListener("click", removeListeners);
-}
+    playerOneDiv.addEventListener("mouseover", mouseOver);
 
-playerOneDiv.addEventListener("mouseout", mouseOut);
+    function mouseOver(event) {
+      if (blockInProgress) return;
 
-function mouseOut(event) {
-  const element = event.target;
-  let x = parseInt(element.dataset.x, 10);
-  let y = parseInt(element.dataset.y, 10);
-  let testval = x,
-    dx = 1,
-    dy = 0;
-  if (testval + 4 < 10) {
-    for (let i = 0; i < 5; i++) {
-      const tile = document.querySelector(
-        `.tile[data-x="${x + dx * i}"][data-y="${y + dy * i}"]`,
-      );
-      if (tile.classList.contains("placed")) {
-        tile.style.backgroundColor = "";
-        tile.classList.remove("placed");
+      const element = event.target;
+      let x = parseInt(element.dataset.x, 10);
+      let y = parseInt(element.dataset.y, 10);
+
+      if (playerOne.gameboard.place(y, x, len, dir)) {
+        blockInProgress = true; // state that this block is in progress to prevent removing it
+        updateBoard();
+        element.addEventListener("click", confirmPlacement);
       }
     }
-  }
-  playerOne.gameboard.remove(y, x, 5, "yatay");
-  playerOne.gameboard.map.forEach((row, rowIndex) => {
-    row.forEach((value, colIndex) => {
-      if (value === 0) {
-        const tile = document.querySelector(
-          `.tile[data-x="${colIndex}"][data-y="${rowIndex}"]`,
-        );
-        tile.style.backgroundColor = "";
+
+    function confirmPlacement(event) {
+      // finish the process and remove event listeners when clicked
+      playerOneDiv.removeEventListener("mouseover", mouseOver);
+      playerOneDiv.removeEventListener("mouseout", mouseOut);
+      event.target.removeEventListener("click", confirmPlacement);
+      blockInProgress = false;
+      console.log(playerOne.gameboard.map);
+      resolve();
+    }
+
+    function mouseOut(event) {
+      if (!blockInProgress) return;
+      // if the block is in progress you can safely remove it otherwise that means block is placed thus you cant remove it
+      const element = event.target;
+      let x = parseInt(element.dataset.x, 10);
+      let y = parseInt(element.dataset.y, 10);
+
+      if (playerOne.gameboard.remove(y, x, len, dir)) {
+        blockInProgress = false;
+        updateBoard();
       }
-    });
+    }
+
+    playerOneDiv.addEventListener("mouseout", mouseOut);
+
+    function updateBoard() {
+      playerOne.gameboard.map.forEach((row, rowIndex) => {
+        row.forEach((value, colIndex) => {
+          const tile = document.querySelector(
+            `.tile[data-x="${colIndex}"][data-y="${rowIndex}"]`,
+          );
+          tile.style.backgroundColor = value === 1 ? "gray" : "";
+        });
+      });
+    }
   });
 }
 
+(async function () {
+  await placeBlock(5);
+  await placeBlock(4);
+  await placeBlock(3);
+  await placeBlock(3);
+  await placeBlock(2);
+})();
 /*
   tableMain.appendChild(playerOneDiv);
   tableMain.appendChild(playerTwoDiv);
