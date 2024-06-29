@@ -10,12 +10,12 @@ class Gameboard {
     const dy = dir === "dikey" ? 1 : 0;
 
     if ((dx && x + len > 10) || (dy && y + len > 10)) {
-      return;
+      return false;
     }
 
     for (let i = 0; i < len; i++) {
       if (this.map[y + i * dy][x + i * dx] !== 0) {
-        return;
+        return false;
       }
     }
 
@@ -26,18 +26,19 @@ class Gameboard {
       ship.coordinates.push([y + i * dy, x + i * dx]);
     }
     this.ships.push(ship);
+    return true;
   }
   remove(y, x, len, dir) {
     const dx = dir === "yatay" ? 1 : 0;
     const dy = dir === "dikey" ? 1 : 0;
 
     if ((dx && x + len > 10) || (dy && y + len > 10)) {
-      return;
+      return false;
     }
 
     for (let i = 0; i < len; i++) {
       if (this.map[y + i * dy][x + i * dx] !== 1) {
-        return;
+        return false;
       }
     }
 
@@ -49,6 +50,7 @@ class Gameboard {
       (ship) => ship.coordinates[0][0] == y && ship.coordinates[0][1] == x,
     );
     this.ships.splice(indexToRemove, 1);
+    return true;
   }
   receiveAttack(y, x) {
     switch (this.map[y][x]) {
