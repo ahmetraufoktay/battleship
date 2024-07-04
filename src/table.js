@@ -1,5 +1,6 @@
-import { playerOne } from "./index";
-import { playerTwo } from "./index";
+import { Player } from "./player";
+const playerOne = new Player("human");
+const playerTwo = new Player("human");
 
 const tableMain = document.createElement("main");
 tableMain.id = "tableMain";
@@ -24,26 +25,24 @@ function loadSquares(player) {
     }
   }
 }
-
-playerTwoDiv.addEventListener("click", (event) => {
-  const element = event.target;
-  const datax = element.getAttribute("data-x");
-  const datay = element.getAttribute("data-y");
-
-  if (playerTwo.gameboard.map[datay][datax] === 1) {
-    element.style.backgroundColor = "blue";
-  } else if (playerTwo.gameboard.map[datay][datax] === 0) {
-    element.style.backgroundColor = "gray";
+function placeShips() {
+  for (let i = 5; i > 0; i--) {
+    let len = i;
+    if (i == 1) {
+      len = 3;
+    }
+    while (playerTwo.gameboard.ships.length !== 6 - i) {
+      let x = Math.floor(Math.random() * 10);
+      let y = Math.floor(Math.random() * 10);
+      let direction = x % 2 == 0 ? "dikey" : "yatay";
+      playerTwo.gameboard.place(y, x, len, direction);
+    }
   }
-  playerTwo.gameboard.receiveAttack(datay, datax);
+  console.log(playerTwo.gameboard.map);
+}
 
-  if (playerTwo.gameboard.over()) {
-    setTimeout(() => {
-      alert("Game Over");
-    }, 250);
-  }
-});
+placeShips();
 
 loadSquares(playerTwoDiv);
 
-export { playerTwoDiv, tableMain, loadSquares };
+export { playerOne, playerTwo, playerTwoDiv, tableMain, loadSquares };
