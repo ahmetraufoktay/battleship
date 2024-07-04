@@ -61,7 +61,7 @@ class Gameboard {
         this.map[y][x] = -1;
         for (let ship of this.ships) {
           for (let coord of ship.coordinates) {
-            if (coord[0] === y && coord[1] === x) {
+            if (coord[0] == y && coord[1] == x) {
               ship.hit();
             }
           }
