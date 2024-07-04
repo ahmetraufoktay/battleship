@@ -1,7 +1,7 @@
 import { loadSquares } from "./table";
 import { tableMain } from "./table";
 import { playerTwoDiv } from "./table";
-import { playerOne } from ".";
+import { playerOne } from "./table";
 //selection menu
 const selectionMenu = document.createElement("main");
 selectionMenu.id = "selectionMenu";
@@ -58,7 +58,6 @@ async function placeBlock(len) {
       playerOneDiv.removeEventListener("mouseout", mouseOut);
       event.target.removeEventListener("click", confirmPlacement);
       blockInProgress = false;
-      console.log(playerOne.gameboard.map);
       resolve();
     }
 
@@ -80,10 +79,10 @@ async function placeBlock(len) {
     function updateBoard() {
       playerOne.gameboard.map.forEach((row, rowIndex) => {
         row.forEach((value, colIndex) => {
-          const tile = document.querySelector(
+          const tile = playerOneDiv.querySelector(
             `.tile[data-x="${colIndex}"][data-y="${rowIndex}"]`,
           );
-          tile.style.backgroundColor = value === 1 ? "gray" : "";
+          tile.style.backgroundColor = value == 1 ? "#abd079" : "";
         });
       });
     }
@@ -96,13 +95,13 @@ async function placeBlock(len) {
   await placeBlock(3);
   await placeBlock(3);
   await placeBlock(2);
+  await setTimeout(() => {
+    tableMain.appendChild(playerOneDiv);
+    tableMain.appendChild(playerTwoDiv);
+    const body = document.querySelector("body");
+    body.removeChild(selectionMenu);
+    body.appendChild(tableMain);
+  }, 250);
 })();
-/*
-  tableMain.appendChild(playerOneDiv);
-  tableMain.appendChild(playerTwoDiv);
-  const body = document.querySelector("body");
-  body.removeChild(selectionMenu);
-  body.appendChild(tableMain);
-*/
 
-export { selectionMenu, tableMain };
+export { selectionMenu, tableMain, playerOneDiv };
