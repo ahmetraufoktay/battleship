@@ -1,11 +1,8 @@
 import "./style.css";
-import { Player } from "./player";
-import { selectionMenu } from "./selection";
+import { selectionMenu, playerOneDiv } from "./selection";
 import { nameMenu } from "./start";
+import { playerOne, playerTwo, playerTwoDiv } from "./table";
 const body = document.querySelector("body");
-
-const playerOne = new Player("human");
-const playerTwo = new Player("human");
 
 body.appendChild(nameMenu);
 const startButton = document.getElementById("nameButton");
@@ -19,5 +16,130 @@ startButton.addEventListener("click", () => {
     body.appendChild(selectionMenu);
   }
 });
+startGame();
+function chooseFreeSpaces(player) {
+  let x = Math.floor(Math.random() * 10);
+  let y = Math.floor(Math.random() * 10);
+  while (player.gameboard.map[y][x] == 2 || player.gameboard.map[y][x] == -1) {
+    x = Math.floor(Math.random() * 10);
+    y = Math.floor(Math.random() * 10);
+  }
+  return [y, x];
+}
+function attackPONE(target) {
+  if (playerOne.gameboard.over()) return;
+  let [dataY, dataX] = target;
+  const element = playerOneDiv.querySelector(
+    `.tile[data-x="${dataX}"][data-y="${dataY}"]`,
+  );
+  playerOne.gameboard.receiveAttack(dataY, dataX);
+  const tileStatus = playerOne.gameboard.map[dataY][dataX];
+  element.style.backgroundColor = tileStatus == -1 ? "red" : "gray";
+}
+function attackPTWO(target) {
+  if (playerTwo.gameboard.over()) return;
+  let dataX = target.getAttribute("data-x");
+  let dataY = target.getAttribute("data-y");
+  playerTwo.gameboard.receiveAttack(dataY, dataX);
+  const tileStatus = playerTwo.gameboard.map[dataY][dataX];
+  target.style.backgroundColor = tileStatus == -1 ? "blue" : "gray";
+  checkSunking(dataY, dataX, playerTwo, playerTwoDiv);
+}
+function startGame() {
+  const interval = setInterval(() => {
+    const mainElement = document.querySelector("main");
+    if (!mainElement) {
+      console.error("Main element not found");
+      clearInterval(interval);
+      return;
+    }
+    if (mainElement.id === "tableMain") {
+      clearInterval(interval);
+      console.log("Game Started");
+      playerTwoDiv.addEventListener("click", playGame);
+    }
+  }, 1000);
+}
+let memory = [];
+let root = [];
+let mdirX = [-1, 1, 0, 0];
+let mdirY = [0, 0, -1, 1];
+let dirIndex = 0;
+function playGame(event) {
+  if (!event.target || event.target.style.backgroundColor != "") return;
+  attackPTWO(event.target);
+  let target, y, x;
+  let memoryStatus = memory.length == 2;
+  if (memory.length == 2) {
+    [y, x] = memory;
+    target = [y, x];
+    memoryStatus = true;
+  } else {
+    [y, x] = chooseFreeSpaces(playerOne);
+    target = [y, x];
+  }
 
-export { playerOne, playerTwo };
+  attackPONE(target);
+
+  const sunkStatus = checkSunking(y, x, playerOne, playerOneDiv);
+  if (sunkStatus) {
+    memory = [];
+    root = [];
+    return;
+  }
+  if (!memoryStatus && playerOne.gameboard.map[y][x] == -1) {
+    root = [y, x];
+    updateMemory(y, x);
+  } else if (memoryStatus) {
+    if (isInvalidMove(y, x)) {
+      [y, x] = root;
+      dirIndex = (dirIndex + 1) % 4;
+    }
+    updateMemory(y, x);
+  }
+}
+function updateMemory(y, x) {
+  let newy, newx;
+  for (let i = 0; i < 4; i++) {
+    dirIndex = (dirIndex + i) % 4;
+    newy = y + mdirY[dirIndex];
+    newx = x + mdirX[dirIndex];
+    if (isValidMove(newy, newx)) {
+      memory = [newy, newx];
+      break;
+    }
+  }
+}
+function checkSunking(y, x, player, playerdiv) {
+  const ship = player.gameboard.ships.find((ship) =>
+    ship.coordinates.some((coord) => coord[0] == y && coord[1] == x),
+  );
+  if (ship && ship.isSunk()) {
+    for (let i = 0; i < ship.coordinates.length; i++) {
+      let [y, x] = ship.coordinates[i];
+      const tile = playerdiv.querySelector(
+        `.tile[data-x="${x}"][data-y="${y}"]`,
+      );
+      tile.style.backgroundColor = "red";
+    }
+    return true;
+  }
+  return false;
+}
+
+function isValidMove(y, x) {
+  return (
+    y >= 0 &&
+    y < 10 &&
+    x >= 0 &&
+    x < 10 &&
+    playerOne.gameboard.map[y][x] != -1 &&
+    playerOne.gameboard.map[y][x] != 2
+  );
+}
+
+function isInvalidMove(y, x) {
+  return (
+    y < 0 || y >= 10 || x < 0 || x >= 10 || playerOne.gameboard.map[y][x] == 2
+  );
+}
