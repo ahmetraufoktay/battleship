@@ -30,6 +30,7 @@ nav {
   text-align: center;
   padding: 20px 0;
   font-family: "Warfare";
+  text-shadow: 4px 4px black;
   color: white;
 }
 
@@ -93,6 +94,7 @@ main {
   justify-content: center;
   align-items: center;
   font-family: "Schwachsin";
+  border: 4px solid black;
 }
 #nameInput::placeholder {
   color: rgb(29, 28, 28);
@@ -101,9 +103,10 @@ main {
   width: 95%;
   height: 10vh;
   border-style: none;
-  background-color: greenyellow;
+  background-color: rgb(28, 164, 65);
   cursor: pointer;
-  border: 2px solid black;
+  border: 4px solid black;
+  color: white;
 
   font-size: 3rem;
 }
