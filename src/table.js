@@ -8,6 +8,26 @@ tableMain.id = "tableMain";
 const playerTwoDiv = document.createElement("div");
 playerTwoDiv.id = "playerTwo";
 
+const modal = document.createElement("dialog");
+modal.id = "modal";
+const closeModal = document.createElement("button");
+closeModal.id = "closeModal";
+closeModal.innerText = "X";
+closeModal.addEventListener("click", () => {
+  modal.close();
+});
+const winnerName = document.createElement("div");
+winnerName.id = "winner";
+const playAgain = document.createElement("button");
+playAgain.id = "reload";
+playAgain.innerText = "Play Again";
+playAgain.addEventListener("click", () => {
+  location.reload();
+});
+modal.appendChild(closeModal);
+modal.appendChild(winnerName);
+modal.appendChild(playAgain);
+
 function createSquare(x, y) {
   const block = document.createElement("div");
   block.classList = "tile";
@@ -38,11 +58,11 @@ function placeShips() {
       playerTwo.gameboard.place(y, x, len, direction);
     }
   }
-  console.log(playerTwo.gameboard.map);
 }
 
 placeShips();
 
 loadSquares(playerTwoDiv);
 
+tableMain.appendChild(modal);
 export { playerOne, playerTwo, playerTwoDiv, tableMain, loadSquares };
