@@ -4,47 +4,23 @@ import { nameMenu } from "./start";
 import { playerOne, playerTwo, playerTwoDiv } from "./table";
 const body = document.querySelector("body");
 
+let name;
 body.appendChild(nameMenu);
 const startButton = document.getElementById("nameButton");
 startButton.addEventListener("click", () => {
   const nameInput = document.getElementById("nameInput");
-  if (nameInput.value == "") {
+  if (nameInput.value.length > 18) {
+    nameInput.value = "";
+    nameInput.placeholder = "MAXIMUM 18 CHARS";
+  } else if (nameInput.value == "") {
     nameInput.placeholder = "INSERT NAME";
   } else {
-    let name = nameInput.value;
+    name = nameInput.value;
     body.removeChild(nameMenu);
     body.appendChild(selectionMenu);
   }
 });
 startGame();
-function chooseFreeSpaces(player) {
-  let x = Math.floor(Math.random() * 10);
-  let y = Math.floor(Math.random() * 10);
-  while (player.gameboard.map[y][x] == 2 || player.gameboard.map[y][x] == -1) {
-    x = Math.floor(Math.random() * 10);
-    y = Math.floor(Math.random() * 10);
-  }
-  return [y, x];
-}
-function attackPONE(target) {
-  if (playerOne.gameboard.over()) return;
-  let [dataY, dataX] = target;
-  const element = playerOneDiv.querySelector(
-    `.tile[data-x="${dataX}"][data-y="${dataY}"]`,
-  );
-  playerOne.gameboard.receiveAttack(dataY, dataX);
-  const tileStatus = playerOne.gameboard.map[dataY][dataX];
-  element.style.backgroundColor = tileStatus == -1 ? "red" : "gray";
-}
-function attackPTWO(target) {
-  if (playerTwo.gameboard.over()) return;
-  let dataX = target.getAttribute("data-x");
-  let dataY = target.getAttribute("data-y");
-  playerTwo.gameboard.receiveAttack(dataY, dataX);
-  const tileStatus = playerTwo.gameboard.map[dataY][dataX];
-  target.style.backgroundColor = tileStatus == -1 ? "blue" : "gray";
-  checkSunking(dataY, dataX, playerTwo, playerTwoDiv);
-}
 function startGame() {
   const interval = setInterval(() => {
     const mainElement = document.querySelector("main");
@@ -98,6 +74,40 @@ function playGame(event) {
     updateMemory(y, x);
   }
 }
+function attackPONE(target) {
+  let [dataY, dataX] = target;
+  const element = playerOneDiv.querySelector(
+    `.tile[data-x="${dataX}"][data-y="${dataY}"]`,
+  );
+  playerOne.gameboard.receiveAttack(dataY, dataX);
+  const tileStatus = playerOne.gameboard.map[dataY][dataX];
+  element.style.backgroundColor = tileStatus == -1 ? "red" : "gray";
+  if (playerOne.gameboard.over()) {
+    gameOver("two");
+    return;
+  }
+}
+function attackPTWO(target) {
+  let dataX = target.getAttribute("data-x");
+  let dataY = target.getAttribute("data-y");
+  playerTwo.gameboard.receiveAttack(dataY, dataX);
+  const tileStatus = playerTwo.gameboard.map[dataY][dataX];
+  target.style.backgroundColor = tileStatus == -1 ? "blue" : "gray";
+  checkSunking(dataY, dataX, playerTwo, playerTwoDiv);
+  if (playerTwo.gameboard.over()) {
+    gameOver("one");
+    return;
+  }
+}
+function chooseFreeSpaces(player) {
+  let x = Math.floor(Math.random() * 10);
+  let y = Math.floor(Math.random() * 10);
+  while (player.gameboard.map[y][x] == 2 || player.gameboard.map[y][x] == -1) {
+    x = Math.floor(Math.random() * 10);
+    y = Math.floor(Math.random() * 10);
+  }
+  return [y, x];
+}
 function updateMemory(y, x) {
   let newy, newx;
   for (let i = 0; i < 4; i++) {
@@ -143,3 +153,13 @@ function isInvalidMove(y, x) {
     y < 0 || y >= 10 || x < 0 || x >= 10 || playerOne.gameboard.map[y][x] == 2
   );
 }
+
+function gameOver(player) {
+  let winner = player == "one" ? name.toUpperCase() : "COMPUTER";
+  playerTwoDiv.removeEventListener("click", playGame);
+  const winnerName = document.getElementById("winner");
+  winnerName.innerText = `${winner} WON`;
+  const modal = document.getElementById("modal");
+  modal.showModal();
+}
+export { name };
