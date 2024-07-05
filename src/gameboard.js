@@ -53,6 +53,10 @@ class Gameboard {
     return true;
   }
   receiveAttack(y, x) {
+    if (this.map[x][y] === undefined) {
+      console.error(`Invalid coordinates: x=${x}, y=${y}`);
+      return;
+    }
     switch (this.map[y][x]) {
       case 0:
         this.map[y][x] = 2;
