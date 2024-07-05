@@ -2,6 +2,7 @@ import { loadSquares } from "./table";
 import { tableMain } from "./table";
 import { playerTwoDiv } from "./table";
 import { playerOne } from "./table";
+import { name } from ".";
 //selection menu
 const selectionMenu = document.createElement("main");
 selectionMenu.id = "selectionMenu";
@@ -96,8 +97,22 @@ async function placeBlock(len) {
   await placeBlock(3);
   await placeBlock(2);
   await setTimeout(() => {
-    tableMain.appendChild(playerOneDiv);
-    tableMain.appendChild(playerTwoDiv);
+    const containerOne = document.createElement("div");
+    containerOne.id = "container";
+    const nameOne = document.createElement("div");
+    nameOne.innerText = `CAPTAIN ${name.toUpperCase()}`;
+    nameOne.id = "nameOne";
+    containerOne.appendChild(nameOne);
+    containerOne.appendChild(playerOneDiv);
+    const containerTwo = document.createElement("div");
+    containerTwo.id = "container";
+    const nameTwo = document.createElement("div");
+    nameTwo.innerText = "COMPUTER";
+    nameTwo.id = "nameTwo";
+    containerTwo.appendChild(nameTwo);
+    containerTwo.appendChild(playerTwoDiv);
+    tableMain.appendChild(containerOne);
+    tableMain.appendChild(containerTwo);
     const body = document.querySelector("body");
     body.removeChild(selectionMenu);
     body.appendChild(tableMain);
